@@ -3,6 +3,13 @@ package com.atoennis.walmartcodechallenge;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
+import com.atoennis.walmartcodechallenge.data.ProductService;
+import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsRequest;
+import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsResponse;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,6 +25,16 @@ public class ProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product);
         ButterKnife.bind(this);
 
+        Bus bus = new Bus();
+        bus.register(this);
+        ProductService productService = new ProductService(bus, this);
+        productService.getProducts(new GetProductsRequest());
+
         setSupportActionBar(toolbar);
+    }
+
+    @Subscribe
+    public void handleGetProductsResponse(GetProductsResponse response) {
+        Log.d(ProductActivity.class.getSimpleName(), "Got a product response.");
     }
 }
