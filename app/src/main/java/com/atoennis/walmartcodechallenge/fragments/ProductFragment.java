@@ -1,4 +1,4 @@
-package com.atoennis.walmartcodechallenge;
+package com.atoennis.walmartcodechallenge.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.atoennis.walmartcodechallenge.DividerItemDecoration;
+import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.model.Product;
 
 import org.xml.sax.XMLReader;
@@ -29,6 +31,7 @@ import butterknife.ButterKnife;
 public class ProductFragment extends Fragment {
 
     public interface ProductFragmentListener {
+
         void onScrolledToBottomOfList();
     }
 
@@ -62,7 +65,7 @@ public class ProductFragment extends Fragment {
                 int totalItems = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
 
-                if(lastVisibleItemPos + 1 >= totalItems) {
+                if (lastVisibleItemPos + 1 >= totalItems) {
                     listener.onScrolledToBottomOfList();
                 }
             }
@@ -77,7 +80,7 @@ public class ProductFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public void displayProducts(List<Product> products) {
+    public void addProductsToList(List<Product> products) {
         productAdapter.displayProducts(products);
     }
 

@@ -2,6 +2,7 @@ package com.atoennis.walmartcodechallenge.data;
 
 import android.content.Context;
 
+import com.atoennis.walmartcodechallenge.BusProvider;
 import com.atoennis.walmartcodechallenge.model.Product;
 import com.atoennis.walmartcodechallenge.model.ProductWrapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -20,13 +21,15 @@ public class ProductService {
 
     private final Context context;
 
-    public ProductService(Bus bus, Context context) {
-        this.bus = bus;
+    public ProductService(Context context) {
+        this.bus = BusProvider.getInstance();
         this.context = context;
 
         // Dependency typically built and injected with Dagger 2
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        bus.register(this);
     }
 
     public void getProducts(GetProductsRequest request) {
