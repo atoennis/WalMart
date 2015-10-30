@@ -31,9 +31,6 @@ public class ProductService {
 
     public void getProducts(GetProductsRequest request) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
             InputStream tempProductFile = context.getAssets().open("products.json");
 
             ProductWrapper productWrapper = objectMapper.readValue(tempProductFile, ProductWrapper.class);

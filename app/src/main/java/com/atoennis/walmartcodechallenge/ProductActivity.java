@@ -35,6 +35,10 @@ public class ProductActivity extends AppCompatActivity {
 
     @Subscribe
     public void handleGetProductsResponse(GetProductsResponse response) {
-        Log.d(ProductActivity.class.getSimpleName(), "Got a product response.");
+        getProductFragment().displayProducts(response.products);
+    }
+
+    private ProductFragment getProductFragment() {
+        return (ProductFragment) getSupportFragmentManager().findFragmentById(R.id.product_fragment);
     }
 }
