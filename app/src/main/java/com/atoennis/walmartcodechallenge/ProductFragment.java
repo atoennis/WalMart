@@ -39,6 +39,7 @@ public class ProductFragment extends Fragment {
         productAdapter = new ProductAdapter();
         productsList.setHasFixedSize(true);
         productsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        productsList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
         productsList.setAdapter(productAdapter);
 
         return view;
@@ -96,7 +97,7 @@ public class ProductFragment extends Fragment {
 
             @Override
             public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-                if(tag.equalsIgnoreCase("li") && opening){
+                if (tag.equalsIgnoreCase("li") && opening) {
                     output.append("\n");
                 }
             }
