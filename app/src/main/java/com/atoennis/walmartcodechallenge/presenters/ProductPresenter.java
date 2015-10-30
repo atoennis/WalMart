@@ -14,13 +14,15 @@ public class ProductPresenter {
     public interface ProductViewContract {
 
         void addProductsToList(List<Product> products);
+
     }
     public static class State {
-
         List<Product> products = new ArrayList<>();
+        public int pageNumber = 1;
+        public int pageSize = 30;
     }
-    private ProductViewContract view;
 
+    private ProductViewContract view;
     private State state;
 
     private final ProductService productService;
@@ -36,16 +38,21 @@ public class ProductPresenter {
 
     public void onResume() {
         BusProvider.getInstance().register(this);
-        productService.getProducts(new GetProductsRequest());
+        productService.getProducts(new GetProductsRequest(state.pageNumber, state.pageSize));
     }
 
     public void onPause() {
         BusProvider.getInstance().unregister(this);
     }
 
+    public void onScrolledToBottomOfList() {
+        productService.getProducts(new GetProductsRequest(state.pageNumber, state.pageSize));
+    }
+
     @Subscribe
     public void handleGetProductsResponse(GetProductsResponse response) {
-        state.products.addAll(response.products);
+        state.pageNumber = response.productWrapper.pageNumber;
+        state.products.addAll(response.productWrapper.products);
 
         view.addProductsToList(state.products);
     }

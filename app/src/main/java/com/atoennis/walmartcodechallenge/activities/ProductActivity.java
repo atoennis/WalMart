@@ -3,7 +3,6 @@ package com.atoennis.walmartcodechallenge.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.data.ProductService;
@@ -52,7 +51,7 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
 
     @Override
     public void onScrolledToBottomOfList() {
-        Log.d(ProductActivity.class.getSimpleName(), "At bottom of list, yay!");
+        presenter.onScrolledToBottomOfList();
     }
 
     @Override

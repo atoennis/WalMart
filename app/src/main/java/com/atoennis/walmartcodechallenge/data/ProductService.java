@@ -3,7 +3,6 @@ package com.atoennis.walmartcodechallenge.data;
 import android.content.Context;
 
 import com.atoennis.walmartcodechallenge.BusProvider;
-import com.atoennis.walmartcodechallenge.model.Product;
 import com.atoennis.walmartcodechallenge.model.ProductWrapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +10,6 @@ import com.squareup.otto.Bus;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class ProductService {
 
@@ -37,20 +35,27 @@ public class ProductService {
             InputStream tempProductFile = context.getAssets().open("products.json");
 
             ProductWrapper productWrapper = objectMapper.readValue(tempProductFile, ProductWrapper.class);
-            bus.post(new GetProductsResponse(productWrapper.products));
+            bus.post(new GetProductsResponse(productWrapper));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static class GetProductsRequest {
+        public final int pageNumber;
+        public final int pageSize;
+
+        public GetProductsRequest(int pageNumber, int pageSize) {
+            this.pageNumber = pageNumber;
+            this.pageSize = pageSize;
+        }
     }
 
     public static class GetProductsResponse {
-        public final List<Product> products;
+        public final ProductWrapper productWrapper;
 
-        public GetProductsResponse(List<Product> products) {
-            this.products = products;
+        public GetProductsResponse(ProductWrapper productWrapper) {
+            this.productWrapper = productWrapper;
         }
     }
 }
