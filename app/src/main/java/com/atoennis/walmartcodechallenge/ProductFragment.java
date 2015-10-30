@@ -6,12 +6,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.text.Editable;
+import android.text.Html;
+import android.text.Html.TagHandler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.atoennis.walmartcodechallenge.model.Product;
+
+import org.xml.sax.XMLReader;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +58,12 @@ public class ProductFragment extends Fragment {
 
         private List<Product> products = Collections.emptyList();
 
+        private final TagHandler tagHandler;
+
+        ProductAdapter() {
+            tagHandler = new ProductTagHandler();
+        }
+
         @Override
         public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -66,7 +77,7 @@ public class ProductFragment extends Fragment {
             Product product = products.get(position);
 
             holder.nameLabel.setText(product.name);
-            holder.shortDescriptionLabel.setText(product.shortDescription);
+            holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, tagHandler));
             holder.priceLabel.setText(product.price);
         }
 
@@ -79,6 +90,16 @@ public class ProductFragment extends Fragment {
             this.products = products;
 
             notifyDataSetChanged();
+        }
+
+        private class ProductTagHandler implements TagHandler {
+
+            @Override
+            public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+                if(tag.equalsIgnoreCase("li") && opening){
+                    output.append("\n");
+                }
+            }
         }
     }
 

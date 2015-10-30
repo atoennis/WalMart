@@ -23,7 +23,7 @@ public class Product {
     public final boolean inStock;
 
     public Product(@JsonProperty("productId") String productId,
-                   @JsonProperty("name") String name,
+                   @JsonProperty("productName") String name,
                    @JsonProperty("shortDescription") String shortDescription,
                    @JsonProperty("longDescription") String longDescription,
                    @JsonProperty("price") String price,
