@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.atoennis.walmartcodechallenge.ProductFragment.ProductFragmentListener;
 import com.atoennis.walmartcodechallenge.data.ProductService;
 import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsRequest;
 import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsResponse;
@@ -14,10 +15,12 @@ import com.squareup.otto.Subscribe;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProductActivity extends AppCompatActivity {
+public class ProductActivity extends AppCompatActivity implements ProductFragmentListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
+    private ProductService productService;  // Ideally would be injected by Dagger 2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,7 @@ public class ProductActivity extends AppCompatActivity {
 
         Bus bus = new Bus();
         bus.register(this);
-        ProductService productService = new ProductService(bus, this);
+        productService = new ProductService(bus, this);
         productService.getProducts(new GetProductsRequest());
 
         setSupportActionBar(toolbar);
@@ -40,5 +43,10 @@ public class ProductActivity extends AppCompatActivity {
 
     private ProductFragment getProductFragment() {
         return (ProductFragment) getSupportFragmentManager().findFragmentById(R.id.product_fragment);
+    }
+
+    @Override
+    public void onScrolledToBottomOfList() {
+        Log.d(ProductActivity.class.getSimpleName(), "At bottom of list, yay!");
     }
 }

@@ -1,10 +1,12 @@
 package com.atoennis.walmartcodechallenge;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.Html;
@@ -26,9 +28,21 @@ import butterknife.ButterKnife;
 
 public class ProductFragment extends Fragment {
 
+    public interface ProductFragmentListener {
+        void onScrolledToBottomOfList();
+    }
+
     @Bind(R.id.product_list) RecyclerView productsList;
 
     private ProductAdapter productAdapter;
+
+    private ProductFragmentListener listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (ProductFragmentListener) context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,11 +50,23 @@ public class ProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         ButterKnife.bind(this, view);
 
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         productAdapter = new ProductAdapter();
         productsList.setHasFixedSize(true);
-        productsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        productsList.setLayoutManager(layoutManager);
         productsList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
         productsList.setAdapter(productAdapter);
+        productsList.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int totalItems = layoutManager.getItemCount();
+                int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
+
+                if(lastVisibleItemPos + 1 >= totalItems) {
+                    listener.onScrolledToBottomOfList();
+                }
+            }
+        });
 
         return view;
     }
