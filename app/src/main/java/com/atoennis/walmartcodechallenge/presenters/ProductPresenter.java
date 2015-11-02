@@ -14,7 +14,6 @@ public class ProductPresenter {
     public interface ProductViewContract {
 
         void addProductsToList(List<Product> products);
-
     }
 
     public static class State {
@@ -26,7 +25,7 @@ public class ProductPresenter {
     }
 
     private ProductViewContract view;
-    private State state;
+    State state;
 
     private final ProductService productService;
 
@@ -66,7 +65,7 @@ public class ProductPresenter {
     }
 
     int generateNextPageNumber() {
-        int currentProducts = state.pageSize * state.nextPageNumber;
+        int currentProducts = state.pageSize * state.pageNumber;
 
         return currentProducts < state.totalProducts ? state.pageNumber + 1 : state.pageNumber;
     }
