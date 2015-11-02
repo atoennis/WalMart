@@ -16,10 +16,13 @@ public class ProductPresenter {
         void addProductsToList(List<Product> products);
 
     }
+
     public static class State {
         List<Product> products = new ArrayList<>();
-        public int pageNumber = 1;
-        public int pageSize = 30;
+        public int nextPageNumber = 1;
+        public int pageNumber;
+        public int pageSize = 12;
+        public int totalProducts;
     }
 
     private ProductViewContract view;
@@ -38,7 +41,7 @@ public class ProductPresenter {
 
     public void onResume() {
         BusProvider.getInstance().register(this);
-        productService.getProducts(new GetProductsRequest(state.pageNumber, state.pageSize));
+        productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
     }
 
     public void onPause() {
@@ -46,14 +49,25 @@ public class ProductPresenter {
     }
 
     public void onScrolledToBottomOfList() {
-        productService.getProducts(new GetProductsRequest(state.pageNumber, state.pageSize));
+        if (state.pageNumber < state.nextPageNumber) {
+            productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+        }
     }
 
     @Subscribe
     public void handleGetProductsResponse(GetProductsResponse response) {
+        state.totalProducts = response.productWrapper.totalProducts;
         state.pageNumber = response.productWrapper.pageNumber;
+        state.nextPageNumber = generateNextPageNumber();
+
         state.products.addAll(response.productWrapper.products);
 
         view.addProductsToList(state.products);
+    }
+
+    int generateNextPageNumber() {
+        int currentProducts = state.pageSize * state.nextPageNumber;
+
+        return currentProducts < state.totalProducts ? state.pageNumber + 1 : state.pageNumber;
     }
 }
