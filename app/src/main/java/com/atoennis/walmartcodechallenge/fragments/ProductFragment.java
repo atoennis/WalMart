@@ -13,6 +13,7 @@ import android.text.Html;
 import android.text.Html.TagHandler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -33,6 +34,13 @@ public class ProductFragment extends Fragment {
     public interface ProductFragmentListener {
 
         void onScrolledToBottomOfList();
+
+        void onProductClicked(Product product);
+
+    }
+
+    public static Fragment buildFragment() {
+        return new ProductFragment();
     }
 
     @Bind(R.id.product_list) RecyclerView productsList;
@@ -104,11 +112,18 @@ public class ProductFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ProductViewHolder holder, int position) {
-            Product product = products.get(position);
+            final Product product = products.get(position);
 
             holder.nameLabel.setText(product.name);
             holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, tagHandler));
             holder.priceLabel.setText(product.price);
+
+            holder.itemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onProductClicked(product);
+                }
+            });
         }
 
         @Override

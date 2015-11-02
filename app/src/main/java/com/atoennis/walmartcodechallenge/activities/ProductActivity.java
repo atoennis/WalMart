@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.data.ProductService;
+import com.atoennis.walmartcodechallenge.fragments.ProductDetailsFragment;
 import com.atoennis.walmartcodechallenge.fragments.ProductFragment;
 import com.atoennis.walmartcodechallenge.fragments.ProductFragment.ProductFragmentListener;
 import com.atoennis.walmartcodechallenge.model.Product;
@@ -20,6 +21,9 @@ import butterknife.ButterKnife;
 public class ProductActivity extends AppCompatActivity implements ProductFragmentListener,
         ProductViewContract {
 
+    private static final String TAG_PRODUCT_FRAGMENT = "TAG_PRODUCT_FRAGMENT";
+    private static final String TAG_PRODUCT_DETAIL_FRAGMENT = "TAG_PRODUCT_DETAIL_FRAGMENT";
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
@@ -33,6 +37,12 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
 
         presenter = new ProductPresenter(new ProductService(this));
         presenter.setView(this);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_content, ProductFragment.buildFragment(), TAG_PRODUCT_FRAGMENT)
+                    .commit();
+        }
 
         setSupportActionBar(toolbar);
     }
@@ -55,11 +65,26 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
     }
 
     @Override
+    public void onProductClicked(Product product) {
+        presenter.onProductClicked(product);
+    }
+
+    @Override
     public void addProductsToList(List<Product> products) {
         getProductFragment().addProductsToList(products);
     }
 
+    @Override
+    public void showProductDetails(Product product) {
+        ProductDetailsFragment fragment = ProductDetailsFragment.buildFragment(product);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_content, fragment, TAG_PRODUCT_DETAIL_FRAGMENT)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private ProductFragment getProductFragment() {
-        return (ProductFragment) getSupportFragmentManager().findFragmentById(R.id.product_fragment);
+        return (ProductFragment) getSupportFragmentManager().findFragmentByTag(TAG_PRODUCT_FRAGMENT);
     }
 }

@@ -3,6 +3,10 @@ package com.atoennis.walmartcodechallenge.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
+@Parcel()
 public class Product {
     public final String productId;
 
@@ -22,6 +26,7 @@ public class Product {
 
     public final boolean inStock;
 
+    @ParcelConstructor
     public Product(@JsonProperty("productId") String productId,
                    @JsonProperty("productName") String name,
                    @JsonProperty("shortDescription") String shortDescription,

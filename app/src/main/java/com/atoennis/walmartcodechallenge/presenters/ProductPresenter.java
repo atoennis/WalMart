@@ -14,19 +14,20 @@ public class ProductPresenter {
     public interface ProductViewContract {
 
         void addProductsToList(List<Product> products);
-    }
 
+        void showProductDetails(Product product);
+    }
     public static class State {
+
         List<Product> products = new ArrayList<>();
         public int nextPageNumber = 1;
         public int pageNumber;
         public int pageSize = 12;
         public int totalProducts;
     }
-
     private ProductViewContract view;
-    State state;
 
+    State state;
     private final ProductService productService;
 
     public ProductPresenter(ProductService productService) {
@@ -51,6 +52,10 @@ public class ProductPresenter {
         if (state.pageNumber < state.nextPageNumber) {
             productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
         }
+    }
+
+    public void onProductClicked(Product product) {
+        view.showProductDetails(product);
     }
 
     @Subscribe
