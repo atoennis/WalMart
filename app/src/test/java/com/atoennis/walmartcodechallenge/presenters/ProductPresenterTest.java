@@ -68,7 +68,7 @@ public class ProductPresenterTest {
         verify(productService, times(1)).getProducts(argumentCaptor.capture());
 
         GetProductsRequest getProductsRequest = argumentCaptor.getValue();
-        Assert.assertEquals(1, getProductsRequest.pageNumber);
+        Assert.assertEquals(2, getProductsRequest.pageNumber);
         Assert.assertEquals(30, getProductsRequest.pageSize);
     }
 }
