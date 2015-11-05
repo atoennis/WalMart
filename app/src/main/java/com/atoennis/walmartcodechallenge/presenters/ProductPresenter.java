@@ -1,5 +1,7 @@
 package com.atoennis.walmartcodechallenge.presenters;
 
+import android.os.Bundle;
+
 import com.atoennis.walmartcodechallenge.BusProvider;
 import com.atoennis.walmartcodechallenge.data.ProductService;
 import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsRequest;
@@ -7,10 +9,14 @@ import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsResponse
 import com.atoennis.walmartcodechallenge.model.Product;
 import com.squareup.otto.Subscribe;
 
+import org.parceler.Parcel;
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductPresenter {
+
     public interface ProductViewContract {
 
         void addProductsToList(List<Product> products);
@@ -18,19 +24,26 @@ public class ProductPresenter {
         void showProductDetails(Product product);
 
     }
-    public static class State {
-        List<Product> products = new ArrayList<>();
 
+    private static final String EXTRA_STATE = "EXTRA_STATE";
+
+    @Parcel
+    public static class State {
+
+        public List<Product> products = new ArrayList<>();
         public int nextPageNumber = 1;
         public int pageNumber;
+
         public int pageSize = 12;
         public int totalProducts;
         public Product selectedProduct;
     }
-    private ProductViewContract view;
-    State state;
 
+    private ProductViewContract view;
+
+    State state;
     private final ProductService productService;
+
     public ProductPresenter(ProductService productService) {
         this.productService = productService;
         this.state = new State();
@@ -42,11 +55,23 @@ public class ProductPresenter {
 
     public void onResume() {
         BusProvider.getInstance().register(this);
-        productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+        if (state.selectedProduct == null) {
+            productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+        }
     }
 
     public void onPause() {
         BusProvider.getInstance().unregister(this);
+    }
+
+    public void saveState(Bundle outState) {
+        outState.putParcelable(EXTRA_STATE, Parcels.wrap(state));
+    }
+
+    public void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            state = Parcels.unwrap(savedInstanceState.getParcelable(EXTRA_STATE));
+        }
     }
 
     public void onScrolledToBottomOfList() {

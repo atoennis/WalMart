@@ -36,6 +36,7 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
         ButterKnife.bind(this);
 
         presenter = new ProductPresenter(new ProductService(this));
+        presenter.restoreState(savedInstanceState);
         presenter.setView(this);
 
         if (savedInstanceState == null) {
@@ -57,6 +58,12 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
     protected void onPause() {
         presenter.onPause();
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.saveState(outState);
     }
 
     @Override
