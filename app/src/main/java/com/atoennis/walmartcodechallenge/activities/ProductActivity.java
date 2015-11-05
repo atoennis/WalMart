@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.data.ProductService;
-import com.atoennis.walmartcodechallenge.fragments.ProductDetailsFragment;
+import com.atoennis.walmartcodechallenge.fragments.ProductDetailFragment;
 import com.atoennis.walmartcodechallenge.fragments.ProductFragment;
 import com.atoennis.walmartcodechallenge.fragments.ProductFragment.ProductFragmentListener;
 import com.atoennis.walmartcodechallenge.model.Product;
@@ -76,7 +76,7 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
 
     @Override
     public void showProductDetails(Product product) {
-        ProductDetailsFragment fragment = ProductDetailsFragment.buildFragment(product);
+        ProductDetailFragment fragment = ProductDetailFragment.buildFragment(product);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_content, fragment, TAG_PRODUCT_DETAIL_FRAGMENT)
