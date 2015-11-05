@@ -16,20 +16,21 @@ public class ProductPresenter {
         void addProductsToList(List<Product> products);
 
         void showProductDetails(Product product);
+
     }
     public static class State {
-
         List<Product> products = new ArrayList<>();
+
         public int nextPageNumber = 1;
         public int pageNumber;
         public int pageSize = 12;
         public int totalProducts;
+        public Product selectedProduct;
     }
     private ProductViewContract view;
-
     State state;
-    private final ProductService productService;
 
+    private final ProductService productService;
     public ProductPresenter(ProductService productService) {
         this.productService = productService;
         this.state = new State();
@@ -55,7 +56,13 @@ public class ProductPresenter {
     }
 
     public void onProductClicked(Product product) {
+        state.selectedProduct = product;
         view.showProductDetails(product);
+    }
+
+    public void onBackPressed() {
+        state.selectedProduct = null;
+        view.addProductsToList(state.products);
     }
 
     @Subscribe

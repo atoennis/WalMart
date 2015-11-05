@@ -78,10 +78,17 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
     public void showProductDetails(Product product) {
         ProductDetailFragment fragment = ProductDetailFragment.buildFragment(product);
 
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .replace(R.id.main_content, fragment, TAG_PRODUCT_DETAIL_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        presenter.onBackPressed();
     }
 
     private ProductFragment getProductFragment() {
