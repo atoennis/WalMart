@@ -3,6 +3,7 @@ package com.atoennis.walmartcodechallenge.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -15,11 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.atoennis.walmartcodechallenge.DividerItemDecoration;
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.model.Product;
+import com.squareup.picasso.Picasso;
 
 import org.xml.sax.XMLReader;
 
@@ -61,7 +64,9 @@ public class ProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         ButterKnife.bind(this, view);
 
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        boolean tablet = getResources().getBoolean(R.bool.tablet);
+        final LinearLayoutManager layoutManager = tablet ? new GridLayoutManager(getContext(), 3)
+                : new LinearLayoutManager(getContext());
         productAdapter = new ProductAdapter();
         productsList.setHasFixedSize(true);
         productsList.setLayoutManager(layoutManager);
@@ -117,6 +122,11 @@ public class ProductFragment extends Fragment {
             holder.nameLabel.setText(product.name);
             holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, tagHandler));
             holder.priceLabel.setText(product.price);
+            Picasso.with(getContext())
+                    .load(product.productImage)
+                    .fit()
+                    .centerInside()
+                    .into(holder.productImage);
 
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -152,6 +162,7 @@ public class ProductFragment extends Fragment {
         @Bind(R.id.name) TextView nameLabel;
         @Bind(R.id.short_description) TextView shortDescriptionLabel;
         @Bind(R.id.price) TextView priceLabel;
+        @Bind(R.id.image) ImageView productImage;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
