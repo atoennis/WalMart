@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
-@Parcel()
+@Parcel
 public class Product {
     public final String productId;
 

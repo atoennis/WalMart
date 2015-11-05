@@ -3,7 +3,6 @@ package com.atoennis.walmartcodechallenge.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.model.Product;
+import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
@@ -32,9 +32,9 @@ public class ProductDetailFragment extends Fragment {
     }
 
     @Bind(R.id.name) TextView nameField;
-    @Bind(R.id.long_description) TextView longDescriptionField;
     @Bind(R.id.price) TextView priceField;
     @Bind(R.id.image) ImageView productImage;
+    @Bind(R.id.in_stock_label) TextView inStockLabel;
 
     @Nullable
     @Override
@@ -48,8 +48,14 @@ public class ProductDetailFragment extends Fragment {
             Product product = Parcels.unwrap(args.getParcelable(EXTRA_PRODUCT));
 
             nameField.setText(product.name);
-            longDescriptionField.setText(Html.fromHtml(product.longDescription).toString());
+            Picasso.with(getContext())
+                    .load(product.productImage)
+                    .fit()
+                    .centerInside()
+                    .into(productImage);
             priceField.setText(product.price);
+            inStockLabel.setText(product.inStock ? getString(R.string.in_stock_label)
+                    : getString(R.string.out_of_stock_label));
         }
 
         return view;
