@@ -65,12 +65,17 @@ public class ProductFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         boolean tablet = getResources().getBoolean(R.bool.tablet);
-        final LinearLayoutManager layoutManager = tablet ? new GridLayoutManager(getContext(), 3)
-                : new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager;
+        if (tablet) {
+            layoutManager = new GridLayoutManager(getContext(), 3);
+        } else {
+            layoutManager = new LinearLayoutManager(getContext());
+            productsList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+        }
+
         productAdapter = new ProductAdapter();
         productsList.setHasFixedSize(true);
         productsList.setLayoutManager(layoutManager);
-        productsList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
         productsList.setAdapter(productAdapter);
         productsList.addOnScrollListener(new OnScrollListener() {
             @Override
