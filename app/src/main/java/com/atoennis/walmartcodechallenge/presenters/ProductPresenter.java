@@ -1,6 +1,7 @@
 package com.atoennis.walmartcodechallenge.presenters;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.atoennis.walmartcodechallenge.BusProvider;
 import com.atoennis.walmartcodechallenge.data.ProductService;
@@ -21,8 +22,7 @@ public class ProductPresenter {
 
         void addProductsToList(List<Product> products);
 
-        void showProductDetails(Product product);
-
+        void showProductDetails(List<Product> products, int productPosition);
     }
 
     private static final String EXTRA_STATE = "EXTRA_STATE";
@@ -80,9 +80,9 @@ public class ProductPresenter {
         }
     }
 
-    public void onProductClicked(Product product) {
+    public void onProductClicked(@NonNull Product product) {
         state.selectedProduct = product;
-        view.showProductDetails(product);
+        view.showProductDetails(state.products, findProductPosition(product));
     }
 
     public void onBackPressed() {
@@ -105,5 +105,14 @@ public class ProductPresenter {
         int currentProducts = state.pageSize * state.pageNumber;
 
         return currentProducts < state.totalProducts ? state.pageNumber + 1 : state.pageNumber;
+    }
+
+    int findProductPosition(@NonNull Product product) {
+        for (int pos = 0; pos < state.products.size(); pos++) {
+            if (product.productId.equalsIgnoreCase(state.products.get(pos).productId)) {
+                return pos;
+            }
+        }
+        return 0;
     }
 }
