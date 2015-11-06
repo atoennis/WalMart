@@ -56,7 +56,11 @@ public class ProductPresenter {
     public void onResume() {
         BusProvider.getInstance().register(this);
         if (state.selectedProduct == null) {
-            productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+            if(moreProductsAvailable()) {
+                productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+            } else {
+                view.addProductsToList(state.products);
+            }
         }
     }
 
@@ -114,5 +118,9 @@ public class ProductPresenter {
             }
         }
         return 0;
+    }
+
+    boolean moreProductsAvailable() {
+        return state.products.size() <= state.totalProducts;
     }
 }
