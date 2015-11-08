@@ -2,6 +2,7 @@ package com.atoennis.walmartcodechallenge.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,9 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Editable;
 import android.text.Html;
-import android.text.Html.TagHandler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,11 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.atoennis.walmartcodechallenge.DividerItemDecoration;
+import com.atoennis.walmartcodechallenge.ListTagHandler;
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.model.Product;
 import com.squareup.picasso.Picasso;
-
-import org.xml.sax.XMLReader;
 
 import java.util.Collections;
 import java.util.List;
@@ -106,12 +104,6 @@ public class ProductFragment extends Fragment {
 
         private List<Product> products = Collections.emptyList();
 
-        private final TagHandler tagHandler;
-
-        ProductAdapter() {
-            tagHandler = new ProductTagHandler();
-        }
-
         @Override
         public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -125,7 +117,9 @@ public class ProductFragment extends Fragment {
             final Product product = products.get(position);
 
             holder.nameLabel.setText(product.name);
-            holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, tagHandler));
+            if (holder.shortDescriptionLabel != null) {
+                holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, new ListTagHandler("\n")));
+            }
             holder.priceLabel.setText(product.price);
             Picasso.with(getContext())
                     .load(product.productImage)
@@ -151,21 +145,11 @@ public class ProductFragment extends Fragment {
 
             notifyDataSetChanged();
         }
-
-        private class ProductTagHandler implements TagHandler {
-
-            @Override
-            public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-                if (tag.equalsIgnoreCase("li") && opening) {
-                    output.append("\n");
-                }
-            }
-        }
     }
 
     static class ProductViewHolder extends ViewHolder {
         @Bind(R.id.name) TextView nameLabel;
-        @Bind(R.id.short_description) TextView shortDescriptionLabel;
+        @Nullable @Bind(R.id.short_description) TextView shortDescriptionLabel;
         @Bind(R.id.price) TextView priceLabel;
         @Bind(R.id.image) ImageView productImage;
 
