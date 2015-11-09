@@ -9,8 +9,8 @@
     tools:context=".ProductActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -22,6 +22,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_product"/>
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
