@@ -3,12 +3,16 @@ package com.atoennis.walmartcodechallenge.presenters;
 
 import com.atoennis.walmartcodechallenge.data.ProductService;
 import com.atoennis.walmartcodechallenge.data.ProductService.GetProductsRequest;
+import com.atoennis.walmartcodechallenge.model.Product;
 import com.atoennis.walmartcodechallenge.presenters.ProductPresenter.State;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -70,5 +74,29 @@ public class ProductPresenterTest {
         GetProductsRequest getProductsRequest = argumentCaptor.getValue();
         Assert.assertEquals(2, getProductsRequest.pageNumber);
         Assert.assertEquals(30, getProductsRequest.pageSize);
+    }
+
+    @Test
+    public void testNoMoreProductsAvailable() {
+        List<Product> products = new ArrayList<>();
+        products.add(mock(Product.class));
+        products.add(mock(Product.class));
+        products.add(mock(Product.class));
+        state.products = products;
+        state.totalProducts = 3;
+
+        boolean moreProductsAvailable = productPresenter.moreProductsAvailable();
+
+        Assert.assertFalse(moreProductsAvailable);
+    }
+
+    @Test
+    public void testMoreProductsAreAvaialble() {
+        state.products = new ArrayList<>();
+        state.totalProducts = 5;
+
+        boolean moreProductsAvailable = productPresenter.moreProductsAvailable();
+
+        Assert.assertTrue(moreProductsAvailable);
     }
 }

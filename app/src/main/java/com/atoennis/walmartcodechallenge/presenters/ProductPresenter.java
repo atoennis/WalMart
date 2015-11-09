@@ -121,6 +121,6 @@ public class ProductPresenter {
     }
 
     boolean moreProductsAvailable() {
-        return state.products.size() <= state.totalProducts;
+        return state.products.size() < state.totalProducts;
     }
 }
