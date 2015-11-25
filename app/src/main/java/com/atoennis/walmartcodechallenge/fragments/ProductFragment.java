@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,7 +83,6 @@ public class ProductFragment extends Fragment {
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
 
                 if (lastVisibleItemPos + 1 >= totalItems) {
-                    Log.d(ProductFragment.class.getSimpleName(), "Scrolled to bottom");
                     listener.onScrolledToBottomOfList();
                 }
             }

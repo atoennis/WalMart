@@ -41,7 +41,6 @@ public class ProductService {
     }
 
     public void getProducts(GetProductsRequest request) {
-        Log.d(ProductService.class.getSimpleName(), "Starting up product api service call");
         ProductApiService productApiService = retrofit.create(ProductApiService.class);
         productApiService.getProducts(context.getString(R.string.api_key), request.pageNumber,
                 request.pageSize)
@@ -49,7 +48,6 @@ public class ProductService {
                     @Override
                     public void onResponse(Response<ProductWrapper> response, Retrofit retrofit) {
                         bus.post(new GetProductsResponse(response.body()));
-                        Log.d(ProductService.class.getSimpleName(), "Successful product api service call");
                     }
 
                     @Override
