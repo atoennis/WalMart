@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +62,12 @@ public class ProductDetailFragment extends Fragment {
             inStockLabel.setText(product.inStock ? getString(R.string.in_stock_label)
                     : getString(R.string.out_of_stock_label));
 
-            shortDescription.setText(Html.fromHtml(product.shortDescription, null, new ListTagHandler("\n")));
-            description.setText(Html.fromHtml(product.longDescription, null, new ListTagHandler("\n")));
+            if (!TextUtils.isEmpty(product.shortDescription)) {
+                shortDescription.setText(Html.fromHtml(product.shortDescription, null, new ListTagHandler("\n")));
+            }
+            if (!TextUtils.isEmpty(product.longDescription)) {
+                description.setText(Html.fromHtml(product.longDescription, null, new ListTagHandler("\n")));
+            }
         }
 
         return view;

@@ -29,14 +29,13 @@ public class ProductPresenter {
 
     @Parcel
     public static class State {
-
         public List<Product> products = new ArrayList<>();
+        public Product selectedProduct;
         public int nextPageNumber = 1;
         public int pageNumber;
-
         public int pageSize = 12;
-        public int totalProducts;
-        public Product selectedProduct;
+        public int totalProducts = 0;
+        public boolean retrievingProducts;
     }
 
     private ProductViewContract view;
@@ -57,7 +56,7 @@ public class ProductPresenter {
         BusProvider.getInstance().register(this);
         if (state.selectedProduct == null) {
             if(moreProductsAvailable()) {
-                productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+                getProducts(state.nextPageNumber, state.pageSize);
             } else {
                 view.addProductsToList(state.products);
             }
@@ -80,7 +79,7 @@ public class ProductPresenter {
 
     public void onScrolledToBottomOfList() {
         if (state.pageNumber < state.nextPageNumber) {
-            productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+            getProducts(state.nextPageNumber, state.pageSize);
         }
     }
 
@@ -96,6 +95,7 @@ public class ProductPresenter {
 
     @Subscribe
     public void handleGetProductsResponse(GetProductsResponse response) {
+        state.retrievingProducts = false;
         state.totalProducts = response.productWrapper.totalProducts;
         state.pageNumber = response.productWrapper.pageNumber;
         state.nextPageNumber = generateNextPageNumber();
@@ -103,6 +103,13 @@ public class ProductPresenter {
         state.products.addAll(response.productWrapper.products);
 
         view.addProductsToList(state.products);
+    }
+
+    private void getProducts(int nextPageNumber, int pageSize) {
+        if(!state.retrievingProducts) {
+            state.retrievingProducts = true;
+            productService.getProducts(new GetProductsRequest(nextPageNumber, pageSize));
+        }
     }
 
     int generateNextPageNumber() {
@@ -121,6 +128,6 @@ public class ProductPresenter {
     }
 
     boolean moreProductsAvailable() {
-        return state.products.size() < state.totalProducts;
+        return state.totalProducts <=0 || state.products.size() < state.totalProducts;
     }
 }

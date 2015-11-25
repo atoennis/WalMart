@@ -1,17 +1,19 @@
 package com.atoennis.walmartcodechallenge.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.atoennis.walmartcodechallenge.BusProvider;
+import com.atoennis.walmartcodechallenge.R;
+import com.atoennis.walmartcodechallenge.data.api.ProductApiService;
 import com.atoennis.walmartcodechallenge.model.ProductWrapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Bus;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import retrofit.Callback;
 import retrofit.JacksonConverterFactory;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 public class ProductService {
@@ -39,28 +41,22 @@ public class ProductService {
     }
 
     public void getProducts(GetProductsRequest request) {
-        try {
-            InputStream tempProductFile = context.getAssets().open(String.format("products%d.json", request.pageNumber));
+        Log.d(ProductService.class.getSimpleName(), "Starting up product api service call");
+        ProductApiService productApiService = retrofit.create(ProductApiService.class);
+        productApiService.getProducts(context.getString(R.string.api_key), request.pageNumber,
+                request.pageSize)
+                .enqueue(new Callback<ProductWrapper>() {
+                    @Override
+                    public void onResponse(Response<ProductWrapper> response, Retrofit retrofit) {
+                        bus.post(new GetProductsResponse(response.body()));
+                        Log.d(ProductService.class.getSimpleName(), "Successful product api service call");
+                    }
 
-            ProductWrapper productWrapper = objectMapper.readValue(tempProductFile, ProductWrapper.class);
-            bus.post(new GetProductsResponse(productWrapper));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        ProductApiService productApiService = retrofit.create(ProductApiService.class);
-//        productApiService.getProducts(context.getString(R.string.api_key), request.pageNumber,
-//                request.pageSize)
-//                .enqueue(new Callback<ProductWrapper>() {
-//                    @Override
-//                    public void onResponse(Response<ProductWrapper> response, Retrofit retrofit) {
-//                        bus.post(new GetProductsResponse(response.body()));
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable t) {
-//                        Log.d(ProductService.class.getSimpleName(), "Failed to retrieve products!");
-//                    }
-//                });
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e(ProductService.class.getSimpleName(), "Failed to retrieve products!", t);
+                    }
+                });
     }
 
     public static class GetProductsRequest {
