@@ -7,7 +7,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 
 public interface ProductApiService {
-    @GET("/walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
+    @GET("/_ah/api/walmart/v1/walmartproducts/{apiKey}/{pageNumber}/{pageSize}")
     Call<ProductWrapper> getProducts(@Path("apiKey") String apiKey,
                                      @Path("pageNumber") int pageNumber,
                                      @Path("pageSize") int pageSize);

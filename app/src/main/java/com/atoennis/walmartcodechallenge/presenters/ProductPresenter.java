@@ -20,23 +20,26 @@ public class ProductPresenter {
 
     public interface ProductViewContract {
 
-        void addProductsToList(List<Product> products);
+        void displayProducts(List<Product> products);
 
         void showProductDetails(List<Product> products, int productPosition);
+
+        void hideUpNavigation();
+
+        void showUpNavigation();
     }
 
     private static final String EXTRA_STATE = "EXTRA_STATE";
 
     @Parcel
     public static class State {
-
         public List<Product> products = new ArrayList<>();
+        public Product selectedProduct;
         public int nextPageNumber = 1;
         public int pageNumber;
-
         public int pageSize = 12;
-        public int totalProducts;
-        public Product selectedProduct;
+        public int totalProducts = 0;
+        public boolean retrievingProducts;
     }
 
     private ProductViewContract view;
@@ -56,11 +59,12 @@ public class ProductPresenter {
     public void onResume() {
         BusProvider.getInstance().register(this);
         if (state.selectedProduct == null) {
-            if(moreProductsAvailable()) {
-                productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
-            } else {
-                view.addProductsToList(state.products);
+            if (state.products.size() <= 0) {
+                getProducts(state.nextPageNumber, state.pageSize);
             }
+            view.displayProducts(state.products);
+        } else {
+            view.showUpNavigation();
         }
     }
 
@@ -80,7 +84,7 @@ public class ProductPresenter {
 
     public void onScrolledToBottomOfList() {
         if (state.pageNumber < state.nextPageNumber) {
-            productService.getProducts(new GetProductsRequest(state.nextPageNumber, state.pageSize));
+            getProducts(state.nextPageNumber, state.pageSize);
         }
     }
 
@@ -91,18 +95,27 @@ public class ProductPresenter {
 
     public void onBackPressed() {
         state.selectedProduct = null;
-        view.addProductsToList(state.products);
+        view.displayProducts(state.products);
+        view.hideUpNavigation();
     }
 
     @Subscribe
     public void handleGetProductsResponse(GetProductsResponse response) {
+        state.retrievingProducts = false;
         state.totalProducts = response.productWrapper.totalProducts;
         state.pageNumber = response.productWrapper.pageNumber;
         state.nextPageNumber = generateNextPageNumber();
 
         state.products.addAll(response.productWrapper.products);
 
-        view.addProductsToList(state.products);
+        view.displayProducts(state.products);
+    }
+
+    private void getProducts(int nextPageNumber, int pageSize) {
+        if (!state.retrievingProducts) {
+            state.retrievingProducts = true;
+            productService.getProducts(new GetProductsRequest(nextPageNumber, pageSize));
+        }
     }
 
     int generateNextPageNumber() {
@@ -121,6 +134,6 @@ public class ProductPresenter {
     }
 
     boolean moreProductsAvailable() {
-        return state.products.size() < state.totalProducts;
+        return state.totalProducts <= 0 || state.products.size() < state.totalProducts;
     }
 }

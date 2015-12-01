@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -96,7 +97,7 @@ public class ProductFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public void addProductsToList(List<Product> products) {
+    public void displayProducts(List<Product> products) {
         productAdapter.displayProducts(products);
     }
 
@@ -117,7 +118,7 @@ public class ProductFragment extends Fragment {
             final Product product = products.get(position);
 
             holder.nameLabel.setText(product.name);
-            if (holder.shortDescriptionLabel != null) {
+            if (holder.shortDescriptionLabel != null && !TextUtils.isEmpty(product.shortDescription)) {
                 holder.shortDescriptionLabel.setText(Html.fromHtml(product.shortDescription, null, new ListTagHandler("\n")));
             }
             holder.priceLabel.setText(product.price);

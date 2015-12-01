@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WalMartCodeChallenge</string>
     <string name="action_settings">Settings</string>
-    <string name="api_key">369c1632-9adb-433d-9be3-fffd6a2086e3</string>
+    <string name="api_key">4021fbbf-ba86-40ac-bf28-e593fcce1c31</string>
     <string name="in_stock_label">In stock</string>
     <string name="out_of_stock_label">Out of stock</string>
     <string name="description_label">Description</string>
