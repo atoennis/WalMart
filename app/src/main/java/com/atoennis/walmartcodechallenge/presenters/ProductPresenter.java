@@ -2,7 +2,6 @@ package com.atoennis.walmartcodechallenge.presenters;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.atoennis.walmartcodechallenge.BusProvider;
 import com.atoennis.walmartcodechallenge.data.ProductService;
@@ -114,7 +113,6 @@ public class ProductPresenter {
 
     private void getProducts(int nextPageNumber, int pageSize) {
         if (!state.retrievingProducts) {
-            Log.d(ProductPresenter.class.getSimpleName(), "Getting products!");
             state.retrievingProducts = true;
             productService.getProducts(new GetProductsRequest(nextPageNumber, pageSize));
         }
