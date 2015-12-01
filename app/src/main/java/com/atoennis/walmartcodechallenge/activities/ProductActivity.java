@@ -1,8 +1,10 @@
 package com.atoennis.walmartcodechallenge.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.atoennis.walmartcodechallenge.R;
 import com.atoennis.walmartcodechallenge.data.ProductService;
@@ -67,6 +69,16 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onScrolledToBottomOfList() {
         presenter.onScrolledToBottomOfList();
     }
@@ -89,12 +101,30 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
                 .replace(R.id.main_content, fragment, TAG_PRODUCT_DETAIL_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
+
+        showUpNavigation();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         presenter.onBackPressed();
+    }
+
+    @Override
+    public void hideUpNavigation() {
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+    @Override
+    public void showUpNavigation() {
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private ProductFragment getProductFragment() {

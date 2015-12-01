@@ -23,6 +23,10 @@ public class ProductPresenter {
         void addProductsToList(List<Product> products);
 
         void showProductDetails(List<Product> products, int productPosition);
+
+        void hideUpNavigation();
+
+        void showUpNavigation();
     }
 
     private static final String EXTRA_STATE = "EXTRA_STATE";
@@ -60,6 +64,8 @@ public class ProductPresenter {
             } else {
                 view.addProductsToList(state.products);
             }
+        } else {
+            view.showUpNavigation();
         }
     }
 
@@ -91,6 +97,7 @@ public class ProductPresenter {
     public void onBackPressed() {
         state.selectedProduct = null;
         view.addProductsToList(state.products);
+        view.hideUpNavigation();
     }
 
     @Subscribe
