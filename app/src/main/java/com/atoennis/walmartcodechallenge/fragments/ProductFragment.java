@@ -97,7 +97,7 @@ public class ProductFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public void addProductsToList(List<Product> products) {
+    public void displayProducts(List<Product> products) {
         productAdapter.displayProducts(products);
     }
 

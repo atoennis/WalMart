@@ -89,8 +89,8 @@ public class ProductActivity extends AppCompatActivity implements ProductFragmen
     }
 
     @Override
-    public void addProductsToList(List<Product> products) {
-        getProductFragment().addProductsToList(products);
+    public void displayProducts(List<Product> products) {
+        getProductFragment().displayProducts(products);
     }
 
     @Override

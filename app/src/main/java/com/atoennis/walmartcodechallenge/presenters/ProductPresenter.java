@@ -2,6 +2,7 @@ package com.atoennis.walmartcodechallenge.presenters;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.atoennis.walmartcodechallenge.BusProvider;
 import com.atoennis.walmartcodechallenge.data.ProductService;
@@ -20,7 +21,7 @@ public class ProductPresenter {
 
     public interface ProductViewContract {
 
-        void addProductsToList(List<Product> products);
+        void displayProducts(List<Product> products);
 
         void showProductDetails(List<Product> products, int productPosition);
 
@@ -59,11 +60,10 @@ public class ProductPresenter {
     public void onResume() {
         BusProvider.getInstance().register(this);
         if (state.selectedProduct == null) {
-            if(moreProductsAvailable()) {
+            if (state.products.size() <= 0) {
                 getProducts(state.nextPageNumber, state.pageSize);
-            } else {
-                view.addProductsToList(state.products);
             }
+            view.displayProducts(state.products);
         } else {
             view.showUpNavigation();
         }
@@ -96,7 +96,7 @@ public class ProductPresenter {
 
     public void onBackPressed() {
         state.selectedProduct = null;
-        view.addProductsToList(state.products);
+        view.displayProducts(state.products);
         view.hideUpNavigation();
     }
 
@@ -109,11 +109,12 @@ public class ProductPresenter {
 
         state.products.addAll(response.productWrapper.products);
 
-        view.addProductsToList(state.products);
+        view.displayProducts(state.products);
     }
 
     private void getProducts(int nextPageNumber, int pageSize) {
-        if(!state.retrievingProducts) {
+        if (!state.retrievingProducts) {
+            Log.d(ProductPresenter.class.getSimpleName(), "Getting products!");
             state.retrievingProducts = true;
             productService.getProducts(new GetProductsRequest(nextPageNumber, pageSize));
         }
@@ -135,6 +136,6 @@ public class ProductPresenter {
     }
 
     boolean moreProductsAvailable() {
-        return state.totalProducts <=0 || state.products.size() < state.totalProducts;
+        return state.totalProducts <= 0 || state.products.size() < state.totalProducts;
     }
 }
